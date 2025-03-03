@@ -61,7 +61,7 @@ async function run(): Promise<void> {
           projectId: Number(project.project?.id)
         }
         version = await project.createVersion(versionToCreate)
-        core.debug(versionToCreate.name)
+        core.setOutput('id', version.id)
       }
     } else {
       core.debug(`Version ${RELEASE_NAME} found and is going to be updated`)
@@ -73,6 +73,7 @@ async function run(): Promise<void> {
         userReleaseDate: undefined
       }
       version = await project.updateVersion(versionToUpdate)
+      core.setOutput('id', version.id)
     }
 
     if (TICKETS !== '') {
@@ -83,8 +84,8 @@ async function run(): Promise<void> {
         if (version?.id !== undefined) project.updateIssue(ticket, version?.id)
       })
     }
-  } catch (_e) {
-    const e: Error = _e
+  } catch (_e: unknown) {
+    const e: Error = _e as Error
     core.setFailed(e)
   }
 }
