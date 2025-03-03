@@ -29,7 +29,9 @@ inputs:
     description: Dump the config
     required: false
     default: 'false'
-
+outputs:
+  id:
+    description: Release ID
 runs:
   using: 'node12'
   main: 'dist/index.js'
