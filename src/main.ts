@@ -77,9 +77,21 @@ async function run(): Promise<void> {
     }
 
     if (TICKETS !== '') {
-      const tickets = TICKETS.split(',')
+      let tickets: string[] = []
+      if (Array.isArray(TICKETS)) {
+        tickets = TICKETS
+      } else {
+        if (TICKETS.substring(0, 1) === '[') {
+          tickets = JSON.parse(TICKETS)
+        } else {
+         tickets = TICKETS.split(',')
+        }
+      }
       // eslint-disable-next-line github/array-foreach
       tickets.forEach(ticket => {
+        if (ticket.length === 0) {
+          return
+        }
         core.debug(`Going to update ticket ${ticket}`)
         if (version?.id !== undefined) project.updateIssue(ticket, version?.id)
       })

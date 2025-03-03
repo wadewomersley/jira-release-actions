@@ -288,9 +288,23 @@ function run() {
                 core.setOutput('id', version.id);
             }
             if (env_1.TICKETS !== '') {
-                const tickets = env_1.TICKETS.split(',');
+                let tickets = [];
+                if (Array.isArray(env_1.TICKETS)) {
+                    tickets = env_1.TICKETS;
+                }
+                else {
+                    if (env_1.TICKETS.substring(0, 1) === '[') {
+                        tickets = JSON.parse(env_1.TICKETS);
+                    }
+                    else {
+                        tickets = env_1.TICKETS.split(',');
+                    }
+                }
                 // eslint-disable-next-line github/array-foreach
                 tickets.forEach(ticket => {
+                    if (ticket.length === 0) {
+                        return;
+                    }
                     core.debug(`Going to update ticket ${ticket}`);
                     if ((version === null || version === void 0 ? void 0 : version.id) !== undefined)
                         project.updateIssue(ticket, version === null || version === void 0 ? void 0 : version.id);
